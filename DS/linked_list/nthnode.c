@@ -1,3 +1,4 @@
+// The most efficient method to find the nth node from the end of a linked list.
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct node {
