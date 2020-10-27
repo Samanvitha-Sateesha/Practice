@@ -1,4 +1,6 @@
-// This is the program to print the contents of the linked list from the end.
+// Inorder linked lists -- To insert nodes into a linked list in increasing order
+// After a linked list is formed we are going to reverse the value in pairs.
+// 1->2->3->4->5 will become 2->1->4->3->5
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct node {
@@ -40,18 +42,26 @@ void display(struct node *head){
     }
     printf("END\n");
 }
-void printreverse(NODE* head){
-    if(!head)
-        return;
-    printreverse(head->link);
-    printf("%d\n",head->data);    
+NODE* reversePairRecursive(NODE* head){
+    NODE *temp;
+    if(head == NULL || head->link == NULL)
+        return head;
+    else {
+        temp=head->link;
+        head->link=temp->link;
+        temp->link = head;
+        head = temp;
+        head->link->link=reversePairRecursive(head->link->link);
+        
+    }    
+    return head;
 }
 int main(){
     NODE *head = NULL;
     int num,choice;
     while(1){
         printf("\nEnter your choice\n");
-        printf("1.Add to the list\n2.Display\n3.Print Reverse\nAny number to exit\n");
+        printf("1.Add to the list\n2.Display\n3.Reverse in Pairs\nAny number to exit\n");
         scanf("%d",&choice);
         switch (choice)
         {
@@ -62,9 +72,9 @@ int main(){
             break;
         case 2: display(head);
             break;
-        case 3: printf("Reverse list is:\n");
-            printreverse(head);
-            break;    
+        case 3: head = reversePairRecursive(head);
+                display(head);
+                break;          
         default: exit(0);
         }
     }

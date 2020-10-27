@@ -1,4 +1,6 @@
-// This is the program to print the contents of the linked list from the end.
+// Inorder linked lists -- To insert nodes into a linked list in increasing order
+// And to find out if the length of the list is odd or even.
+
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct node {
@@ -40,18 +42,21 @@ void display(struct node *head){
     }
     printf("END\n");
 }
-void printreverse(NODE* head){
-    if(!head)
-        return;
-    printreverse(head->link);
-    printf("%d\n",head->data);    
+int lllength(NODE *head){
+    NODE *temp=head;
+    while(temp && temp->link){
+        temp=temp->link->link;
+    }    
+    if(temp)
+        return 1;
+    return 0;    
 }
 int main(){
     NODE *head = NULL;
-    int num,choice;
+    int num,choice,res;
     while(1){
         printf("\nEnter your choice\n");
-        printf("1.Add to the list\n2.Display\n3.Print Reverse\nAny number to exit\n");
+        printf("1.Add to the list\n2.Display\n3.Length of linked list\nAny number to exit\n");
         scanf("%d",&choice);
         switch (choice)
         {
@@ -62,9 +67,9 @@ int main(){
             break;
         case 2: display(head);
             break;
-        case 3: printf("Reverse list is:\n");
-            printreverse(head);
-            break;    
+        case 3: res=lllength(head);
+        (res == 0)?printf("Length is even\n"):printf("Length is odd\n");
+        break;    
         default: exit(0);
         }
     }
