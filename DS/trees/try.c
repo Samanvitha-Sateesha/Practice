@@ -1,8 +1,7 @@
-// Iterative Queue based C program to do level order traversal 
-// of Binary Tree 
+// Iterative Queue based C program to do level order traversal of Binary tree in reverse order
 #include <stdio.h> 
 #include <stdlib.h> 
-#define MAX_Q_SIZE 500 
+#define MAX_Q_SIZE 250 
   
 /* A binary tree node has data, pointer to left child 
    and a pointer to right child */
@@ -17,20 +16,24 @@ struct node
 struct node** createQueue(int *, int *); 
 void enQueue(struct node **, int *, struct node *); 
 struct node *deQueue(struct node **, int *); 
+struct node** createStack(int *);
+void push(struct node **,int *,struct node *);
+void printStack(struct node **, int *);
+struct node* pop(struct node **,int *);
   
 /* Given a binary tree, print its nodes in level order 
    using array for implementing queue */
-int maxElementInBtNr(struct node* root) 
+void printReverseLevelOrder(struct node* root) 
 { 
-    int rear, front,max=-1; 
+    int rear, front,top=0; 
     struct node **queue = createQueue(&front, &rear); 
-    struct node *temp_node = root; 
-    // max=root->data;
+    struct node *temp_node = root,*temp_node1; 
+    int stack[20];
+  
     while (temp_node) 
     { 
-        if(max<temp_node->data)
-            max = temp_node->data; 
-  
+        // printf("%d ", temp_node->data); 
+        stack[top++]=temp_node->data;
         /*Enqueue left child */
         if (temp_node->left) 
             enQueue(queue, &rear, temp_node->left); 
@@ -40,12 +43,26 @@ int maxElementInBtNr(struct node* root)
             enQueue(queue, &rear, temp_node->right); 
   
         /*Dequeue node and make it temp_node*/
-        temp_node = deQueue(queue, &front); 
+        temp_node = deQueue(queue, &front);
+        // printf("%d ",temp_node->data);
+        // stack[top++]=temp_node->data;
     } 
-    return max;
+    while(top--){
+        printf("%d ",stack[top]);
+    }
 } 
   
 /*UTILITY FUNCTIONS*/
+
+
+
+// void printStack(struct node** stack,int *top){
+//     *top = *top-1;
+//     while(*top){
+//         printf("%d",stack[*top]->data);
+//         *top--;
+//     }
+// }
 struct node** createQueue(int *front, int *rear) 
 { 
     struct node **queue = 
@@ -54,13 +71,18 @@ struct node** createQueue(int *front, int *rear)
     *front = *rear = 0; 
     return queue; 
 } 
-  
+// void push(struct node **stack,int *top,int data){
+//     stack[*top]=data;
+//     // printf("%d ",stack[top]->data);
+//     (*top)++;
+//     // return top;
+// }  
 void enQueue(struct node **queue, int *rear, struct node *new_node) 
 { 
     queue[*rear] = new_node; 
     (*rear)++; 
 } 
-  
+ 
 struct node *deQueue(struct node **queue, int *front) 
 { 
     (*front)++; 
@@ -88,6 +110,7 @@ int main()
     root->left->right = newNode(5); 
     root->right->left  = newNode(6); 
     root->right->right = newNode(7); 
-    printf("Value of Maximum Elment in binary tree is:%d\n",maxElementInBtNr(root)); 
+    printf("Reverse Level Order traversal of binary tree is:\n"); 
+    printReverseLevelOrder(root);     
     return 0; 
 }

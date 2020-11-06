@@ -1,3 +1,4 @@
+// C program to print the contents of the tree by traversing the tree in three ways, namely inorder,preorder and postorder.
 #include<stdio.h>
 #include<stdlib.h>
 struct node{

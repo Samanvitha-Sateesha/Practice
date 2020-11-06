@@ -3,7 +3,7 @@
 #include <stdio.h> 
 #include <stdlib.h> 
 #define MAX_Q_SIZE 500 
-int front,rear;  
+  
 /* A binary tree node has data, pointer to left child 
    and a pointer to right child */
 struct node 
@@ -14,56 +14,54 @@ struct node
 }; 
   
 /* frunction prototypes */
-struct node** createQueue(); 
-void enQueue(struct node **, struct node *); 
-struct node *deQueue(struct node **); 
+struct node** createQueue(int *, int *); 
+void enQueue(struct node **, int *, struct node *); 
+struct node *deQueue(struct node **, int *); 
   
 /* Given a binary tree, print its nodes in level order 
    using array for implementing queue */
 void printLevelOrder(struct node* root) 
 { 
-    // int rear=0, front=0; 
-    struct node **queue = createQueue(); 
+    int rear, front; 
+    struct node **queue = createQueue(&front, &rear); 
     struct node *temp_node = root; 
-    enQueue(queue,temp_node);
+    enQueue(queue, &rear, root);   
     while (temp_node) 
     { 
-        temp_node = deQueue(queue);
-        printf("%d ", temp_node->data); 
-  
+        printf("%d ", temp_node->data);   
         /*Enqueue left child */
         if (temp_node->left) 
-            enQueue(queue, temp_node->left); 
+            enQueue(queue, &rear, temp_node->left); 
   
         /*Enqueue right child */
         if (temp_node->right) 
-            enQueue(queue,  temp_node->right); 
+            enQueue(queue, &rear, temp_node->right); 
   
         /*Dequeue node and make it temp_node*/
-        // temp_node = deQueue(queue, &front); 
+        temp_node = deQueue(queue, &front); 
     } 
 } 
   
 /*UTILITY FUNCTIONS*/
-struct node** createQueue() 
+struct node** createQueue(int *front, int *rear) 
 { 
     struct node **queue = 
         (struct node **)malloc(sizeof(struct node*)*MAX_Q_SIZE); 
   
-    front = rear = 0; 
+    *front = *rear = 0; 
     return queue; 
 } 
   
-void enQueue(struct node **queue,struct node *new_node) 
+void enQueue(struct node **queue, int *rear, struct node *new_node) 
 { 
-    queue[rear] = new_node; 
-    (rear)++; 
+    queue[*rear] = new_node; 
+    (*rear)++; 
 } 
   
-struct node *deQueue(struct node **queue) 
+struct node *deQueue(struct node **queue, int *front) 
 { 
-    (front)++; 
-    return queue[front - 1]; 
+    (*front)++; 
+    return queue[*front - 1]; 
 } 
   
 /* Helper function that allocates a new node with the 
@@ -74,7 +72,6 @@ struct node* newNode(int data)
     node->data = data; 
     node->left = NULL; 
     node->right = NULL; 
-  
     return(node); 
 } 
   
@@ -88,9 +85,7 @@ int main()
     root->left->right = newNode(5); 
     root->right->left  = newNode(6); 
     root->right->right = newNode(7); 
-  
     printf("Level Order traversal of binary tree is:\n"); 
     printLevelOrder(root); 
-  
     return 0; 
 }
