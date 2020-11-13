@@ -1,7 +1,7 @@
-// Iterative Queue based C program to find the level which has a maximum sum of its data elements.
+// Iterative Queue based C program to fill the pointers of next sibling elements
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX_Q_SIZE 500
+#define MAX_Q_SIZE 250
 
 /* A binary tree node has data, pointer to left child 
    and a pointer to right child */
@@ -10,6 +10,7 @@ struct node
     int data;
     struct node *left;
     struct node *right;
+    struct node *nextSibling;
 };
 
 /* frunction prototypes */
@@ -17,15 +18,14 @@ struct node **createQueue(int *, int *);
 void enQueue(struct node **, int *, struct node *);
 struct node *deQueue(struct node **, int *);
 int isEmptyQueue(int *, int *);
+struct node *queueFront(struct node **, int *);
 
 /* Given a binary tree, return the level that contains max sum*/
-int levelWithMaxSum(struct node *root)
+int fillNextSibling(struct node *root)
 {
     if (!root)
         return 0;
     int rear = -1, front = -1;
-    int level = 0, maxLevel = 0;
-    int maxSum = 0, currSum = 0;
     struct node **queue = createQueue(&front, &rear);
     struct node *temp_node = root;
     struct node *null_node = NULL;
@@ -38,20 +38,14 @@ int levelWithMaxSum(struct node *root)
         temp_node = deQueue(queue, &front);
         if (temp_node == NULL)
         {
-            if(currSum>maxSum){
-                maxSum=currSum;
-                maxLevel=level;
-            }
             if (isEmptyQueue(&front, &rear) == 0)
             {
                 enQueue(queue, &rear, NULL);
             }
-            level++;
         }
-        // printf("%d ", temp_node->data);
         else
         {
-            currSum += temp_node->data;
+            temp_node->nextSibling = queueFront(queue,&front);
             /*Enqueue left child */
             if (temp_node->left)
                 enQueue(queue, &rear, temp_node->left);
@@ -61,12 +55,10 @@ int levelWithMaxSum(struct node *root)
                 enQueue(queue, &rear, temp_node->right);
         }
     }
-    return maxLevel;
 }
 
 /*UTILITY FUNCTIONS*/
-struct node **
-createQueue(int *front, int *rear)
+struct node **createQueue(int *front, int *rear)
 {
     struct node **queue =
         (struct node **)malloc(sizeof(struct node *) * MAX_Q_SIZE);
@@ -91,17 +83,17 @@ void enQueue(struct node **queue, int *rear, struct node *new_node)
     (*rear)++;
 }
 
-struct node *
-deQueue(struct node **queue, int *front)
+struct node *deQueue(struct node **queue, int *front)
 {
     (*front)++;
     return queue[*front - 1];
 }
-
+struct node *queueFront(struct node **queue,int *front){
+    return queue[*front];
+}
 /* Helper function that allocates a new node with the 
    given data and NULL left and right pointers. */
-struct node *
-newNode(int data)
+struct node *newNode(int data)
 {
     struct node *node = (struct node *)malloc(sizeof(struct node));
     node->data = data;
@@ -121,6 +113,7 @@ int main()
     root->left->right = newNode(5);
     root->right->left = newNode(6);
     root->right->right = newNode(7);
-    printf("Level %d contains maximum sum\n",levelWithMaxSum(root));
+    fillNextSibling(root);
+    printf("Done\n");
     return 0;
 }

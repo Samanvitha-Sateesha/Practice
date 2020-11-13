@@ -7,7 +7,7 @@ def put(num):
         print("Done")
     else: 
         min_val = min(set1)
-        set1.remove(val)
+        set1.remove(min_val)
 def remove_largest():
     if len(set1)>0:
         set1.remove(max(set1))
